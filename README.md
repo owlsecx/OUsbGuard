@@ -18,24 +18,20 @@
 
 ## 📌 Overview
 
-USBGuard policy & USB authorization auditor (BadUSB / HID / mass-storage / IPC / kernel)
+
+OUsbGuard is an offline, read-only USBGuard configuration auditor that parses rules.conf and usbguard-daemon.conf to evaluate USB device-authorization policy. It checks the default rule-set posture, implicit-policy target, present-device and insertion policies, allow-all rules and IPC access control. Findings are mapped to CWE and MITRE ATT&CK, scored and graded, and exported as TXT, Markdown, JSON, CSV or SARIF.
 
 ---
 
 ## ✨ Features
 
-- Full USBGuard rule-language parser — targets, device ids with wildcards, hash / parent-hash / serial / name / via-port / with-interface / with-connect-type / if / label, set operators (all-of, one-of, none-of, equals, equals-ordered, match-all) and conditions
-- Daemon config audit — ImplicitPolicyTarget, Present- Device/Controller policy, InsertedDevicePolicy, AuthorizedDefault, AuditBackend, RuleFile / RuleFolder
-- Rule analysis — broad / wildcard allows, HID without hash (BadUSB, ATT&CK T1200), mass storage, network / vendor-specific interfaces, duplicated & shadowed rules
-- IPC — IPCAllowedUsers / Groups, IPCAccessControl.d privilege files (Devices / Policy / Parameters modify)
-- Kernel — authorized_default, usbcore cmdline, usb-storage / uas / firewire / thunderbolt modprobe blacklists
-- udev / udisks2 / dconf auto-mount & authorization bypass
-- File-permission and ownership checks, offline --root
-- Hashes & serials masked everywhere; CWE + MITRE ATT&CK
-- Weighted 0–100 score with A+…F grade
-- Hardened policy templates + rules.conf rewrite advisor
-- Export TXT / Markdown / JSON / CSV / SARIF 2.1.0
-- Self-test --demo, CI gates --fail-on / --min-severity
+
+- Parsers for usbguard rules.conf and usbguard-daemon.conf (RuleFile, policy and IPC directives)
+- Rule-set analysis: allow-all rules, broad allow by class/vendor, ordering and implicit-deny gaps
+- ImplicitPolicyTarget, PresentDevicePolicy and InsertedDevicePolicy posture checks
+- IPC access control (IPCAllowedUsers/Groups), AuthorizedDefault and device-manager hardening
+- File-permission and ownership checks on rule and daemon configuration
+- CWE+ATT&CK mapping, score/grade and TXT/MD/JSON/CSV/SARIF export with --fail-on gating
 
 ---
 
@@ -48,8 +44,13 @@ USBGuard policy & USB authorization auditor (BadUSB / HID / mass-storage / IPC /
 
 ## 🚀 Usage
 
+
 ```bash
-./OUsbGuard
+./OUsbGuard --scan -f sarif -o usbguard.sarif
+./OUsbGuard --rules /etc/usbguard/rules.conf --daemon /etc/usbguard/usbguard-daemon.conf
+./OUsbGuard -r /mnt/image --fail-on high --json
+./OUsbGuard --demo
+./OUsbGuard --help
 ```
 
 ---
